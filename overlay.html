@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overlay de Marcador - Transparente</title>
+    <style>
+        :root {
+            /* =========================================
+               CONFIGURACIÓN GLOBAL (POSICIONES Y TAMAÑOS)
+               ========================================= */
+            --fuente-principal: 'Arial', sans-serif;
+            --fuente-marcador: 'Impact', sans-serif; /* Fuente gruesa recomendada para números */
+            
+            /* Ajuste global para alinear todo el bloque si es necesario */
+            --offset-x: 0px; 
+            --offset-y: 0px;
+
+            /* =========================================
+               MARCADOR (NÚMEROS FLOTANTES)
+               ========================================= */
+            --marcador-tamaño-fuente: 52px;
+            --marcador-color: #FFFFFF;
+            --marcador-sombra: 2px 2px 5px rgba(0,0,0,0.9);
+            --marcador-ancho: 70px;
+            --marcador-alineacion: center;
+
+            /* Número Equipo 1 (Arriba) */
+            --score1-top: calc(52px + var(--offset-y));
+            --score1-left: calc(275px + var(--offset-x));
+
+            /* Número Equipo 2 (Abajo) */
+            --score2-top: calc(125px + var(--offset-y));
+            --score2-left: calc(275px + var(--offset-x));
+
+            /* =========================================
+               POSESIÓN DEL BALÓN (TRIÁNGULOS REDONDEADOS)
+               ========================================= */
+            --posesion-tamaño: 48px; /* Casi del tamaño de los números del marcador */
+            --posesion-color: #F15A24; /* Naranja estilo NFL */
+            --posesion-radio-esquinas: 10px; /* Nivel de redondeo de las puntas */
+
+            /* Triángulo Equipo 1 */
+            --posesion1-top: calc(55px + var(--offset-y));
+            --posesion1-left: calc(20px + var(--offset-x));
+            --posesion1-visible: block; /* 'block' para mostrar, 'none' para ocultar */
+
+            /* Triángulo Equipo 2 */
+            --posesion2-top: calc(128px + var(--offset-y));
+            --posesion2-left: calc(20px + var(--offset-x));
+            --posesion2-visible: none; /* 'block' para mostrar, 'none' para ocultar */
+
+            /* =========================================
+               SECCIÓN INFERIOR: CUARTO Y CASTIGO
+               ========================================= */
+            --info-top: calc(200px + var(--offset-y));
+            --info-altura: 35px; /* Altura unificada para ambos contenedores */
+            --info-fuente-tamaño: 20px;
+            --info-color-texto: #000000;
+            --info-inclinacion: -12deg; /* Ángulo de inclinación de los recuadros */
+
+            /* Recuadro del Cuarto */
+            --cuarto-left: calc(45px + var(--offset-x));
+            --cuarto-ancho: 130px;
+            --cuarto-bg-color: #F0F0F0;
+            --cuarto-borde: 2px solid #000000;
+
+            /* Recuadro de Castigo */
+            --castigo-left: calc(170px + var(--offset-x)); /* Pegado al recuadro del cuarto */
+            --castigo-ancho: 130px;
+            --castigo-bg-color: #FFC107; /* Amarillo clásico de castigo */
+            --castigo-borde: 2px solid #000000;
+            --castigo-visible: flex; /* 'flex' para mostrar, 'none' para ocultar */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            width: 1920px;
+            height: 1080px;
+            background-color: transparent; /* Fondo transparente para OBS */
+            /* 
+              Para calibrar las posiciones con tu imagen, descomenta estas dos líneas:
+              background-image: url('VERSUS_2.png');
+              background-repeat: no-repeat;
+            */
+            position: relative;
+            font-family: var(--fuente-principal);
+            overflow: hidden;
+        }
+
+        /* ----- ESTILOS DE LOS NÚMEROS ----- */
+        .score {
+            position: absolute;
+            font-family: var(--fuente-marcador);
+            font-size: var(--marcador-tamaño-fuente);
+            color: var(--marcador-color);
+            text-shadow: var(--marcador-sombra);
+            width: var(--marcador-ancho);
+            text-align: var(--marcador-alineacion);
+            background: transparent;
+            z-index: 10;
+        }
+
+        #score-team1 {
+            top: var(--score1-top);
+            left: var(--score1-left);
+        }
+
+        #score-team2 {
+            top: var(--score2-top);
+            left: var(--score2-left);
+        }
+
+        /* ----- ESTILOS DE LA POSESIÓN (SVG) ----- */
+        .possession {
+            position: absolute;
+            width: var(--posesion-tamaño);
+            height: var(--posesion-tamaño);
+            z-index: 10;
+        }
+
+        #possession-team1 {
+            top: var(--posesion1-top);
+            left: var(--posesion1-left);
+            display: var(--posesion1-visible);
+        }
+
+        #possession-team2 {
+            top: var(--posesion2-top);
+            left: var(--posesion2-left);
+            display: var(--posesion2-visible);
+        }
+
+        /* ----- ESTILOS DE CUARTO Y CASTIGO ----- */
+        .info-box {
+            position: absolute;
+            top: var(--info-top);
+            height: var(--info-altura);
+            align-items: center;
+            justify-content: center;
+            font-size: var(--info-fuente-tamaño);
+            font-weight: 900;
+            color: var(--info-color-texto);
+            box-sizing: border-box;
+            transform: skewX(var(--info-inclinacion));
+            z-index: 5;
+        }
+
+        .info-content {
+            /* Invierte la inclinación para que el texto se lea recto */
+            transform: skewX(calc(var(--info-inclinacion) * -1)); 
+            letter-spacing: 1px;
+        }
+
+        #quarter-display {
+            display: flex;
+            left: var(--cuarto-left);
+            width: var(--cuarto-ancho);
+            background-color: var(--cuarto-bg-color);
+            border: var(--cuarto-borde);
+        }
+
+        #penalty-display {
+            display: var(--castigo-visible);
+            left: var(--castigo-left);
+            width: var(--castigo-ancho);
+            background-color: var(--castigo-bg-color);
+            border: var(--castigo-borde);
+            border-left: none; /* Evita doble borde al juntarse con el cuarto */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Triángulo de Posesión Equipo 1 (SVG para lograr esquinas perfectamente redondeadas) -->
+    <svg id="possession-team1" class="possession" viewBox="0 0 100 100">
+        <path d="M 20 15 L 85 50 L 20 85 Z" 
+              fill="var(--posesion-color)" 
+              stroke="var(--posesion-color)" 
+              stroke-width="var(--posesion-radio-esquinas)" 
+              stroke-linejoin="round" />
+    </svg>
+
+    <!-- Número Equipo 1 -->
+    <div id="score-team1" class="score">25</div>
+
+    <!-- Triángulo de Posesión Equipo 2 -->
+    <svg id="possession-team2" class="possession" viewBox="0 0 100 100">
+        <path d="M 20 15 L 85 50 L 20 85 Z" 
+              fill="var(--posesion-color)" 
+              stroke="var(--posesion-color)" 
+              stroke-width="var(--posesion-radio-esquinas)" 
+              stroke-linejoin="round" />
+    </svg>
+
+    <!-- Número Equipo 2 -->
+    <div id="score-team2" class="score">35</div>
+
+    <!-- Contenedor del Cuarto -->
+    <div id="quarter-display" class="info-box">
+        <span class="info-content">1ER. CUARTO</span>
+    </div>
+
+    <!-- Contenedor del Castigo -->
+    <div id="penalty-display" class="info-box">
+        <span class="info-content">CASTIGO</span>
+    </div>
+
+</body>
+</html>
