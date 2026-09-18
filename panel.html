@@ -3,110 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control XZONE</title>
+    <title>Panel de Control - Marcador Transparente</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
-        .panel { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #333; margin-top: 0; }
-        .team-controls { display: flex; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
-        .team-card { flex: 1; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #ddd; }
-        .team-card h2 { margin-top: 0; text-align: center; }
-        .btn-group { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-bottom: 15px; }
-        button { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #ec6608; color: white; transition: 0.2s; }
-        button:hover { background: #d05806; }
-        .btn-reset { background: #555; }
-        .btn-reset:hover { background: #333; }
-        .global-controls { background: #eef; padding: 15px; border-radius: 8px; border: 1px solid #ccd; }
-        .control-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        select, input[type="text"] { padding: 8px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #e9ecef; margin: 0; padding: 20px; }
+        .panel { max-width: 700px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #212529; margin-top: 0; }
         
-        /* Switch para castigo */
+        .teams-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+        .team-card { background: #f8f9fa; padding: 20px; border-radius: 10px; border: 2px solid #dee2e6; text-align: center; }
+        .team-card h2 { margin: 0 0 10px 0; font-size: 22px; color: #495057; }
+        
+        .score-display { font-size: 48px; font-weight: bold; color: #212529; margin-bottom: 15px; }
+        
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        button { padding: 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; transition: all 0.2s; }
+        .btn-add { background: #0d6efd; color: white; }
+        .btn-add:hover { background: #0b5ed7; }
+        .btn-reset { background: #dc3545; color: white; grid-column: span 2; }
+        
+        .possession-box { margin: 15px 0; padding: 10px; background: #fff; border-radius: 6px; border: 1px solid #ced4da; }
+        .possession-box input { transform: scale(1.5); margin-right: 10px; }
+        
+        .timeout-box { margin-top: 15px; }
+        .timeout-box span { font-weight: bold; font-size: 18px; display: block; margin-bottom: 5px; }
+        .btn-to { background: #6c757d; color: white; width: 100%; margin-bottom: 5px; }
+        .btn-to-reset { background: #198754; color: white; width: 100%; }
+
+        .global-card { background: #fff3cd; padding: 20px; border-radius: 10px; border: 2px solid #ffecb5; display: flex; justify-content: space-between; align-items: center; }
+        
+        .quarter-select { font-size: 18px; padding: 8px; border-radius: 6px; font-weight: bold; }
+        
+        /* Switch Castigo */
+        .switch-container { display: flex; align-items: center; gap: 15px; font-size: 20px; font-weight: bold; color: #856404; }
         .switch { position: relative; display: inline-block; width: 60px; height: 34px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
         .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: #ffcc00; }
+        input:checked + .slider { background-color: #ffc107; }
         input:checked + .slider:before { transform: translateX(26px); }
-        .penalty-label { font-size: 18px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
     </style>
 </head>
 <body>
 
 <div class="panel">
-    <h1>PANEL DE CONTROL - MARCADOR</h1>
+    <h1>PANEL DE CONTROL</h1>
     
-    <div class="team-controls">
-        <!-- TEAM 1 -->
+    <div class="teams-grid">
+        <!-- TEAM 1 (Arriba) -->
         <div class="team-card">
-            <h2><input type="text" id="name1" value="PANTERAS" onchange="updateData()"></h2>
-            <div style="text-align: center; font-size: 24px; margin-bottom:10px;" id="score1-disp">0</div>
+            <h2>EQUIPO ARRIBA</h2>
+            <div class="score-display" id="disp-s1">0</div>
             
-            <div class="btn-group">
-                <button onclick="addScore(1, 1)">+1</button>
-                <button onclick="addScore(1, 2)">+2</button>
-                <button onclick="addScore(1, 3)">+3</button>
-                <button onclick="addScore(1, 6)">+6</button>
-                <button class="btn-reset" onclick="resetScore(1)">Reset 0</button>
+            <div class="btn-grid">
+                <button class="btn-add" onclick="updateScore(1, 1)">+1</button>
+                <button class="btn-add" onclick="updateScore(1, 2)">+2</button>
+                <button class="btn-add" onclick="updateScore(1, 3)">+3</button>
+                <button class="btn-add" onclick="updateScore(1, 6)">+6</button>
+                <button class="btn-reset" onclick="resetScore(1)">RESTAURAR A 0</button>
             </div>
             
-            <div style="text-align: center; margin-bottom: 10px;">
-                <label><input type="radio" name="possession" value="1" onchange="updateData()"> 🏈 Posesión</label>
+            <div class="possession-box">
+                <label><input type="radio" name="possession" value="1" onchange="sendData()"> 🏈 Posesión</label>
             </div>
 
-            <div style="text-align: center;">
-                Tiempos Fuera: <span id="to1-disp">3</span><br>
-                <button onclick="useTimeout(1)" style="margin-top:5px; background:#444;">Restar T.O.</button>
-                <button onclick="resetTimeouts(1)" style="margin-top:5px; background:#444;">Restaurar a 3</button>
+            <div class="timeout-box">
+                Tiempos Fuera: <span id="disp-t1">3</span>
+                <button class="btn-to" onclick="useTimeout(1)">-1 Tiempo Fuera</button>
+                <button class="btn-to-reset" onclick="resetTimeout(1)">Restaurar a 3</button>
             </div>
         </div>
 
-        <!-- TEAM 2 -->
+        <!-- TEAM 2 (Abajo) -->
         <div class="team-card">
-            <h2><input type="text" id="name2" value="HALCONES" onchange="updateData()"></h2>
-            <div style="text-align: center; font-size: 24px; margin-bottom:10px;" id="score2-disp">0</div>
+            <h2>EQUIPO ABAJO</h2>
+            <div class="score-display" id="disp-s2">0</div>
             
-            <div class="btn-group">
-                <button onclick="addScore(2, 1)">+1</button>
-                <button onclick="addScore(2, 2)">+2</button>
-                <button onclick="addScore(2, 3)">+3</button>
-                <button onclick="addScore(2, 6)">+6</button>
-                <button class="btn-reset" onclick="resetScore(2)">Reset 0</button>
+            <div class="btn-grid">
+                <button class="btn-add" onclick="updateScore(2, 1)">+1</button>
+                <button class="btn-add" onclick="updateScore(2, 2)">+2</button>
+                <button class="btn-add" onclick="updateScore(2, 3)">+3</button>
+                <button class="btn-add" onclick="updateScore(2, 6)">+6</button>
+                <button class="btn-reset" onclick="resetScore(2)">RESTAURAR A 0</button>
+            </div>
+            
+            <div class="possession-box">
+                <label><input type="radio" name="possession" value="2" checked onchange="sendData()"> 🏈 Posesión</label>
             </div>
 
-            <div style="text-align: center; margin-bottom: 10px;">
-                <label><input type="radio" name="possession" value="2" checked onchange="updateData()"> 🏈 Posesión</label>
-            </div>
-
-            <div style="text-align: center;">
-                Tiempos Fuera: <span id="to2-disp">3</span><br>
-                <button onclick="useTimeout(2)" style="margin-top:5px; background:#444;">Restar T.O.</button>
-                <button onclick="resetTimeouts(2)" style="margin-top:5px; background:#444;">Restaurar a 3</button>
+            <div class="timeout-box">
+                Tiempos Fuera: <span id="disp-t2">3</span>
+                <button class="btn-to" onclick="useTimeout(2)">-1 Tiempo Fuera</button>
+                <button class="btn-to-reset" onclick="resetTimeout(2)">Restaurar a 3</button>
             </div>
         </div>
     </div>
 
-    <!-- GLOBAL CONTROLS -->
-    <div class="global-controls">
-        <div class="control-row">
-            <div>
-                <label style="font-weight: bold; font-size: 18px;">Cuarto de Juego:</label>
-                <select id="quarter-select" onchange="updateData()">
-                    <option value="1ER. CUARTO">1ER. CUARTO</option>
-                    <option value="2DO. CUARTO">2DO. CUARTO</option>
-                    <option value="3ER. CUARTO">3ER. CUARTO</option>
-                    <option value="4TO. CUARTO">4TO. CUARTO</option>
-                    <option value="T. EXTRA">TIEMPO EXTRA</option>
-                    <option value="FINAL">FINAL</option>
-                </select>
-            </div>
-            
-            <div class="penalty-label">
-                Pañuelo / Castigo:
-                <label class="switch">
-                    <input type="checkbox" id="penalty-toggle" onchange="updateData()">
-                    <span class="slider"></span>
-                </label>
-            </div>
+    <!-- CONTROLES GLOBALES -->
+    <div class="global-card">
+        <div>
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">CUARTO:</label>
+            <select id="quarter-select" class="quarter-select" onchange="sendData()">
+                <option value="1ER. CUARTO">1ER. CUARTO</option>
+                <option value="2DO. CUARTO">2DO. CUARTO</option>
+                <option value="3ER. CUARTO">3ER. CUARTO</option>
+                <option value="4TO. CUARTO">4TO. CUARTO</option>
+            </select>
+        </div>
+        
+        <div class="switch-container">
+            PAÑUELO / CASTIGO
+            <label class="switch">
+                <input type="checkbox" id="castigo-toggle" onchange="sendData()">
+                <span class="slider"></span>
+            </label>
         </div>
     </div>
 </div>
@@ -114,69 +123,65 @@
 <script type="module">
     import { db, doc, setDoc } from './firebase-config.js';
     
-    // Estado local de la app
+    // Estado Base
     let state = {
-        team1_name: "PANTERAS",
-        team1_score: 0,
-        team1_timeouts: 3,
-        team2_name: "HALCONES",
-        team2_score: 0,
-        team2_timeouts: 3,
-        possession: 2,
-        quarter: "1ER. CUARTO",
-        penalty_active: false
+        score1: 0,
+        score2: 0,
+        timeouts1: 3,
+        timeouts2: 3,
+        posesion: 2,
+        cuarto: "1ER. CUARTO",
+        castigo: false
     };
 
-    // Función para enviar los datos a Firebase
-    window.updateData = async function() {
-        state.team1_name = document.getElementById('name1').value;
-        state.team2_name = document.getElementById('name2').value;
-        state.quarter = document.getElementById('quarter-select').value;
-        state.penalty_active = document.getElementById('penalty-toggle').checked;
+    window.sendData = async function() {
+        // Leer UI local
+        state.cuarto = document.getElementById('quarter-select').value;
+        state.castigo = document.getElementById('castigo-toggle').checked;
         
-        const possRadios = document.getElementsByName('possession');
-        for(let r of possRadios) { if(r.checked) state.possession = parseInt(r.value); }
+        const radios = document.getElementsByName('possession');
+        for(let r of radios) { if(r.checked) state.posesion = parseInt(r.value); }
 
-        // Actualizar UI local
-        document.getElementById('score1-disp').innerText = state.team1_score;
-        document.getElementById('score2-disp').innerText = state.team2_score;
-        document.getElementById('to1-disp').innerText = state.team1_timeouts;
-        document.getElementById('to2-disp').innerText = state.team2_timeouts;
+        // Actualizar UI
+        document.getElementById('disp-s1').innerText = state.score1;
+        document.getElementById('disp-s2').innerText = state.score2;
+        document.getElementById('disp-t1').innerText = state.timeouts1;
+        document.getElementById('disp-t2').innerText = state.timeouts2;
 
-        // Escribir en Firestore
+        // Enviar a Firebase
         try {
             await setDoc(doc(db, "marcador", "estado"), state);
         } catch (e) {
-            console.error("Error al actualizar Firebase: ", e);
-            alert("Asegúrate de haber configurado firebase-config.js con tus credenciales.");
+            console.error("Error Firebase:", e);
         }
     };
 
-    // Lógica de botones
-    window.addScore = function(team, points) {
-        if(team === 1) state.team1_score += points;
-        else state.team2_score += points;
-        updateData();
+    window.updateScore = function(team, points) {
+        if(team === 1) state.score1 += points;
+        else state.score2 += points;
+        sendData();
     };
 
     window.resetScore = function(team) {
-        if(team === 1) state.team1_score = 0;
-        else state.team2_score = 0;
-        updateData();
+        if(team === 1) state.score1 = 0;
+        else state.score2 = 0;
+        sendData();
     };
 
     window.useTimeout = function(team) {
-        if(team === 1 && state.team1_timeouts > 0) state.team1_timeouts--;
-        if(team === 2 && state.team2_timeouts > 0) state.team2_timeouts--;
-        updateData();
+        if(team === 1 && state.timeouts1 > 0) state.timeouts1--;
+        if(team === 2 && state.timeouts2 > 0) state.timeouts2--;
+        sendData();
     };
 
-    window.resetTimeouts = function(team) {
-        if(team === 1) state.team1_timeouts = 3;
-        else state.team2_timeouts = 3;
-        updateData();
+    window.resetTimeout = function(team) {
+        if(team === 1) state.timeouts1 = 3;
+        else state.timeouts2 = 3;
+        sendData();
     };
 
+    // Envío inicial (Opcional, para sincronizar base de datos vacía)
+    // sendData();
 </script>
 </body>
 </html>

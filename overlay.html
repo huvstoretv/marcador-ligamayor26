@@ -3,77 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Overlay de Marcador - Interactivo</title>
+    <title>Overlay Marcador - Sin Contenedores</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@900&display=swap" rel="stylesheet">
     <style>
         :root {
             /* =========================================
-               CONFIGURACIÓN GLOBAL
+               VARIABLES DE POSICIÓN, TAMAÑO Y COLOR
+               MODIFICA ESTOS VALORES PARA AJUSTAR A TU IMAGEN
                ========================================= */
-            --fuente-principal: 'Arial', sans-serif;
-            --fuente-marcador: 'Impact', sans-serif; 
-            --offset-x: 0px; 
-            --offset-y: 0px;
+               
+            --fuente-marcador: 'Roboto Condensed', sans-serif;
 
-            /* =========================================
-               MARCADOR (NÚMEROS FLOTANTES)
-               ========================================= */
-            --marcador-tamaño-fuente: 52px;
-            --marcador-color: #FFFFFF;
-            --marcador-sombra: 2px 2px 5px rgba(0,0,0,0.9);
-            --marcador-ancho: 70px;
-            --marcador-alineacion: center;
+            /* --- NÚMEROS DEL MARCADOR --- */
+            --score-font-size: 52px;
+            --score-color: #FFFFFF;
+            /* Si necesitas sombra para que resalten, aumenta los valores rgba */
+            --score-shadow: 2px 2px 4px rgba(0,0,0,0.8);
 
-            --score1-top: calc(52px + var(--offset-y));
-            --score1-left: calc(275px + var(--offset-x));
+            /* Posición Puntuación Arriba (Ej. Panteras) */
+            --score1-x: 275px; 
+            --score1-y: 42px;
 
-            --score2-top: calc(125px + var(--offset-y));
-            --score2-left: calc(275px + var(--offset-x));
+            /* Posición Puntuación Abajo (Ej. Halcones) */
+            --score2-x: 275px; 
+            --score2-y: 112px;
 
-            /* =========================================
-               TIEMPOS FUERA (INDICADORES)
-               ========================================= */
-            --timeout-ancho: 15px;
-            --timeout-alto: 6px;
-            --timeout-color-activo: #FFD700; /* Amarillo */
-            --timeout-color-gastado: rgba(255, 255, 255, 0.2); /* Transparente/Apagado */
-            --timeout-espaciado: 5px;
+            /* --- POSESIÓN (TRIÁNGULO NARANJA) --- */
+            --pos-size: 40px;
+            --pos-color: #F15A24;
+            --pos-radio: 8px; /* Redondeo de las esquinas del triángulo */
 
-            --timeouts1-top: calc(105px + var(--offset-y));
-            --timeouts1-left: calc(285px + var(--offset-x));
+            /* Posición Triángulo Arriba */
+            --pos1-x: 0px;
+            --pos1-y: 50px;
 
-            --timeouts2-top: calc(180px + var(--offset-y));
-            --timeouts2-left: calc(285px + var(--offset-x));
+            /* Posición Triángulo Abajo */
+            --pos2-x: 0px;
+            --pos2-y: 120px;
 
-            /* =========================================
-               POSESIÓN DEL BALÓN
-               ========================================= */
-            --posesion-tamaño: 48px; 
-            --posesion-color: #F15A24; 
-            --posesion-radio-esquinas: 10px; 
+            /* --- TIEMPOS FUERA (TRAPEZOIDES GRISES) --- */
+            --to-ancho: 28px;
+            --to-alto: 8px;
+            --to-color: #808080;
+            --to-espacio: 6px;
 
-            --posesion1-top: calc(55px + var(--offset-y));
-            --posesion1-left: calc(20px + var(--offset-x));
+            /* Posición Tiempos Fuera Arriba */
+            --to1-x: 35px;
+            --to1-y: 35px;
 
-            --posesion2-top: calc(128px + var(--offset-y));
-            --posesion2-left: calc(20px + var(--offset-x));
+            /* Posición Tiempos Fuera Abajo */
+            --to2-x: 35px;
+            --to2-y: 105px;
 
-            /* =========================================
-               SECCIÓN INFERIOR: CUARTO Y CASTIGO
-               ========================================= */
-            --info-top: calc(200px + var(--offset-y));
-            --info-altura: 35px; 
-            --info-fuente-tamaño: 20px;
-            --info-inclinacion: -12deg; 
+            /* --- INDICADOR DE CUARTO --- */
+            --quarter-font-size: 20px;
+            --quarter-color: #000000;
+            --quarter-x: 45px;
+            --quarter-y: 195px;
 
-            --cuarto-left: calc(45px + var(--offset-x));
-            --cuarto-ancho: 130px;
-            --cuarto-bg-color: #F0F0F0;
-            --cuarto-color-texto: #000000;
-
-            --castigo-left: calc(170px + var(--offset-x)); 
-            --castigo-ancho: 130px;
-            --castigo-bg-color: #FFC107; 
-            --castigo-color-texto: #000000;
+            /* --- INDICADOR DE CASTIGO --- */
+            --castigo-font-size: 20px;
+            --castigo-bg: #FFC107;
+            --castigo-borde: 2px solid #D3D3D3;
+            --castigo-color: #000000;
+            
+            --castigo-x: 165px; /* Debería estar justo a la derecha del cuarto */
+            --castigo-y: 190px;
+            --castigo-ancho: 120px;
+            --castigo-alto: 32px;
+            --castigo-inclinacion: -12deg; /* Para el formato trapezoide */
         }
 
         body {
@@ -82,136 +82,140 @@
             width: 1920px;
             height: 1080px;
             background-color: transparent; 
-            position: relative;
-            font-family: var(--fuente-principal);
             overflow: hidden;
+            font-family: var(--fuente-marcador);
+            font-weight: 900;
         }
 
-        /* ----- ESTILOS ELEMENTOS ----- */
+        /* --- CLASES CSS BASE --- */
         .score {
             position: absolute;
-            font-family: var(--fuente-marcador);
-            font-size: var(--marcador-tamaño-fuente);
-            color: var(--marcador-color);
-            text-shadow: var(--marcador-sombra);
-            width: var(--marcador-ancho);
-            text-align: var(--marcador-alineacion);
+            font-size: var(--score-font-size);
+            color: var(--score-color);
+            text-shadow: var(--score-shadow);
             z-index: 10;
-        }
-        #score-team1 { top: var(--score1-top); left: var(--score1-left); }
-        #score-team2 { top: var(--score2-top); left: var(--score2-left); }
-
-        .timeouts-container {
-            position: absolute;
-            display: flex;
-            gap: var(--timeout-espaciado);
-            z-index: 10;
-        }
-        #timeouts-team1 { top: var(--timeouts1-top); left: var(--timeouts1-left); }
-        #timeouts-team2 { top: var(--timeouts2-top); left: var(--timeouts2-left); }
-
-        .timeout-dot {
-            width: var(--timeout-ancho);
-            height: var(--timeout-alto);
-            background-color: var(--timeout-color-activo);
-            border: 1px solid #000;
-            border-radius: 2px;
-            box-shadow: 1px 1px 3px rgba(0,0,0,0.8);
-            transition: background-color 0.3s ease;
         }
 
         .possession {
             position: absolute;
-            width: var(--posesion-tamaño);
-            height: var(--posesion-tamaño);
+            width: var(--pos-size);
+            height: var(--pos-size);
             z-index: 10;
-            display: none; /* Oculto por defecto, JS lo muestra */
+            display: none; /* Oculto por defecto, se activa por JS */
+            transition: opacity 0.3s;
         }
-        #possession-team1 { top: var(--posesion1-top); left: var(--posesion1-left); }
-        #possession-team2 { top: var(--posesion2-top); left: var(--posesion2-left); }
 
-        .info-box {
+        .timeouts-container {
             position: absolute;
-            top: var(--info-top);
-            height: var(--info-altura);
+            display: flex;
+            gap: var(--to-espacio);
+            z-index: 10;
+        }
+
+        .timeout-mark {
+            width: var(--to-ancho);
+            height: var(--to-alto);
+            background-color: var(--to-color);
+            /* Forma de trapezoide inclinado a la derecha */
+            clip-path: polygon(15% 0, 100% 0, 85% 100%, 0% 100%);
+            transition: opacity 0.3s;
+        }
+
+        .quarter-text {
+            position: absolute;
+            left: var(--quarter-x);
+            top: var(--quarter-y);
+            font-size: var(--quarter-font-size);
+            color: var(--quarter-color);
+            z-index: 5; /* Z-index mayor que castigo para que pase por detrás */
+        }
+
+        /* Contenedor del Castigo */
+        .castigo-wrapper {
+            position: absolute;
+            left: var(--castigo-x);
+            top: var(--castigo-y);
+            width: var(--castigo-ancho);
+            height: var(--castigo-alto);
+            z-index: 1; /* Detrás del texto del cuarto */
+            /* El overflow hidden es opcional si quieres que el pañuelo emerja desde un corte invisible */
+        }
+
+        .castigo-box {
+            width: 100%;
+            height: 100%;
+            background-color: var(--castigo-bg);
+            border: var(--castigo-borde);
+            color: var(--castigo-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: var(--info-fuente-tamaño);
-            font-weight: 900;
+            font-size: var(--castigo-font-size);
             box-sizing: border-box;
-            transform: skewX(var(--info-inclinacion));
-            border: 2px solid #000000;
-            z-index: 5;
+            
+            /* Inclinación y Forma */
+            transform: skewX(var(--castigo-inclinacion)) translateX(-100%);
+            opacity: 0;
+            
+            /* Animación de deslizamiento y fade */
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease-in;
         }
 
-        .info-content {
-            transform: skewX(calc(var(--info-inclinacion) * -1)); 
-            letter-spacing: 1px;
+        /* Enderezar el texto dentro de la caja inclinada */
+        .castigo-box span {
+            transform: skewX(calc(var(--castigo-inclinacion) * -1));
         }
 
-        #quarter-display {
-            left: var(--cuarto-left);
-            width: var(--cuarto-ancho);
-            background-color: var(--cuarto-bg-color);
-            color: var(--cuarto-color-texto);
+        /* Estado Activo del Castigo */
+        .castigo-box.active {
+            transform: skewX(var(--castigo-inclinacion)) translateX(0);
+            opacity: 1;
         }
 
-        #penalty-display {
-            left: var(--castigo-left);
-            width: var(--castigo-ancho);
-            background-color: var(--castigo-bg-color);
-            color: var(--castigo-color-texto);
-            border-left: none; 
-            display: none; /* Oculto por defecto */
-        }
+        /* Asignación de Posiciones Absolutas */
+        #score1 { left: var(--score1-x); top: var(--score1-y); }
+        #score2 { left: var(--score2-x); top: var(--score2-y); }
+        #pos1 { left: var(--pos1-x); top: var(--pos1-y); }
+        #pos2 { left: var(--pos2-x); top: var(--pos2-y); }
+        #to1 { left: var(--to1-x); top: var(--to1-y); }
+        #to2 { left: var(--to2-x); top: var(--to2-y); }
 
-        /* ANIMACIÓN DEL CASTIGO */
-        @keyframes parpadeoAmarillo {
-            0%, 100% { background-color: var(--castigo-bg-color); color: #000; }
-            50% { background-color: #FFFFFF; color: #D32F2F; }
-        }
-
-        .animacion-activa {
-            display: flex !important;
-            animation: parpadeoAmarillo 1.2s infinite;
-        }
     </style>
 </head>
 <body>
 
-    <!-- Posesión -->
-    <svg id="possession-team1" class="possession" viewBox="0 0 100 100">
-        <path d="M 20 15 L 85 50 L 20 85 Z" fill="var(--posesion-color)" stroke="var(--posesion-color)" stroke-width="var(--posesion-radio-esquinas)" stroke-linejoin="round" />
+    <!-- POSESIÓN (TRIÁNGULOS REDONDEADOS SVG) -->
+    <svg id="pos1" class="possession" viewBox="0 0 100 100">
+        <path d="M 20 15 L 85 50 L 20 85 Z" fill="var(--pos-color)" stroke="var(--pos-color)" stroke-width="var(--pos-radio)" stroke-linejoin="round" />
     </svg>
-    <svg id="possession-team2" class="possession" viewBox="0 0 100 100">
-        <path d="M 20 15 L 85 50 L 20 85 Z" fill="var(--posesion-color)" stroke="var(--posesion-color)" stroke-width="var(--posesion-radio-esquinas)" stroke-linejoin="round" />
+    <svg id="pos2" class="possession" viewBox="0 0 100 100">
+        <path d="M 20 15 L 85 50 L 20 85 Z" fill="var(--pos-color)" stroke="var(--pos-color)" stroke-width="var(--pos-radio)" stroke-linejoin="round" />
     </svg>
 
-    <!-- Marcadores -->
-    <div id="score-team1" class="score">0</div>
-    <div id="score-team2" class="score">0</div>
-
-    <!-- Tiempos Fuera Equipo 1 -->
-    <div id="timeouts-team1" class="timeouts-container">
-        <div class="timeout-dot" id="t1-1"></div>
-        <div class="timeout-dot" id="t1-2"></div>
-        <div class="timeout-dot" id="t1-3"></div>
+    <!-- TIEMPOS FUERA (TRAPEZOIDES) -->
+    <div id="to1" class="timeouts-container">
+        <div class="timeout-mark" id="to1-1"></div>
+        <div class="timeout-mark" id="to1-2"></div>
+        <div class="timeout-mark" id="to1-3"></div>
+    </div>
+    <div id="to2" class="timeouts-container">
+        <div class="timeout-mark" id="to2-1"></div>
+        <div class="timeout-mark" id="to2-2"></div>
+        <div class="timeout-mark" id="to2-3"></div>
     </div>
 
-    <!-- Tiempos Fuera Equipo 2 -->
-    <div id="timeouts-team2" class="timeouts-container">
-        <div class="timeout-dot" id="t2-1"></div>
-        <div class="timeout-dot" id="t2-2"></div>
-        <div class="timeout-dot" id="t2-3"></div>
-    </div>
+    <!-- NÚMEROS DEL MARCADOR -->
+    <div id="score1" class="score">0</div>
+    <div id="score2" class="score">0</div>
 
-    <!-- Cuarto y Castigo -->
-    <div id="quarter-display" class="info-box">
-        <span id="quarter-text" class="info-content">1ER CUARTO</span>
-    </div>
-    <div id="penalty-display" class="info-box">
-        <span class="info-content">CASTIGO</span>
+    <!-- TEXTO DEL CUARTO (SIN CONTENEDOR) -->
+    <div class="quarter-text" id="quarter">1ER. CUARTO</div>
+
+    <!-- INDICADOR DE CASTIGO ANIMADO (CON CONTENEDOR) -->
+    <div class="castigo-wrapper">
+        <div class="castigo-box" id="castigo">
+            <span>CASTIGO</span>
+        </div>
     </div>
 
 
@@ -219,77 +223,64 @@
          SCRIPT DE CONEXIÓN A FIREBASE Y LÓGICA
          ========================================== -->
     <script type="module">
-        // 1. Importar librerías de Firebase v9
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // 2. PEGA AQUÍ TU CONFIGURACIÓN DE FIREBASE
-        // Sustituye el contenido de "firebaseConfig" con los datos de tu proyecto
+        // PEGA AQUÍ TU CONFIGURACIÓN DE FIREBASE
         const firebaseConfig = {
-            apiKey: "AIzaSyD0_heqgUdn0yjLYEPEVdOCkYhN8InZ09k",
-            authDomain: "marcador-ligamayor26.firebaseapp.com",
-            projectId: "marcador-ligamayor26",
-            storageBucket: "marcador-ligamayor26.firebasestorage.app",
-            messagingSenderId: "470066357306",
-            appId: "1:470066357306:web:bcc181b2900596c198c103"
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_PROYECTO.firebaseapp.com",
+            projectId: "TU_PROYECTO",
+            storageBucket: "TU_PROYECTO.appspot.com",
+            messagingSenderId: "TU_SENDER_ID",
+            appId: "TU_APP_ID"
         };
 
-        // 3. Inicializar App y Base de Datos
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const docRef = doc(db, "marcador", "estado");
 
-        // 4. Referencias del DOM (HTML)
-        const score1El = document.getElementById('score-team1');
-        const score2El = document.getElementById('score-team2');
-        const pos1El = document.getElementById('possession-team1');
-        const pos2El = document.getElementById('possession-team2');
-        const quarterText = document.getElementById('quarter-text');
-        const penaltyBox = document.getElementById('penalty-display');
+        // Referencias al DOM
+        const score1El = document.getElementById('score1');
+        const score2El = document.getElementById('score2');
+        const pos1El = document.getElementById('pos1');
+        const pos2El = document.getElementById('pos2');
+        const quarterEl = document.getElementById('quarter');
+        const castigoEl = document.getElementById('castigo');
 
-        // Función para actualizar Tiempos Fuera visualmente
         function updateTimeouts(team, count) {
             for(let i=1; i<=3; i++) {
-                const dot = document.getElementById(`t${team}-${i}`);
-                if(i <= count) {
-                    dot.style.backgroundColor = "var(--timeout-color-activo)";
-                } else {
-                    dot.style.backgroundColor = "var(--timeout-color-gastado)";
-                }
+                const toMark = document.getElementById(`to${team}-${i}`);
+                // Si i es mayor que los timeouts restantes, lo ocultamos bajando la opacidad a 0
+                toMark.style.opacity = (i <= count) ? '1' : '0';
             }
         }
 
-        // 5. Escuchar cambios en Firestore en TIEMPO REAL
-        // Asegúrate de que "marcador" y "estado" coincidan con la ruta de tu panel.html
-        const docRef = doc(db, "marcador", "estado");
-        
         onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
 
-                // Actualizar Puntos
+                // Marcador
                 if (data.score1 !== undefined) score1El.innerText = data.score1;
                 if (data.score2 !== undefined) score2El.innerText = data.score2;
 
-                // Actualizar Cuarto
-                if (data.cuarto) quarterText.innerText = data.cuarto.toUpperCase();
-
-                // Actualizar Posesión
+                // Posesión
                 pos1El.style.display = (data.posesion === 1) ? 'block' : 'none';
                 pos2El.style.display = (data.posesion === 2) ? 'block' : 'none';
 
-                // Actualizar Animación de Castigo (Pañuelo)
-                if (data.castigo === true) {
-                    penaltyBox.classList.add('animacion-activa');
-                } else {
-                    penaltyBox.classList.remove('animacion-activa');
-                }
-
-                // Actualizar Tiempos Fuera (Timeouts)
+                // Tiempos Fuera
                 if (data.timeouts1 !== undefined) updateTimeouts(1, data.timeouts1);
                 if (data.timeouts2 !== undefined) updateTimeouts(2, data.timeouts2);
 
-            } else {
-                console.log("No se encontró el documento de la base de datos.");
+                // Cuarto
+                if (data.cuarto) quarterEl.innerText = data.cuarto;
+
+                // Castigo (Animación)
+                if (data.castigo === true) {
+                    castigoEl.classList.add('active');
+                } else {
+                    castigoEl.classList.remove('active');
+                }
             }
         });
     </script>
